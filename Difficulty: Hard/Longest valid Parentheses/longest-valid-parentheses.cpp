@@ -6,38 +6,33 @@ using namespace std;
 
 
 // } Driver Code Ends
-// User function Template for C++
 
 class Solution {
   public:
-    int maxLength(string& str) {
+    int maxLength(string& s) {
         // code here
-        int open=0;
-        int close=0;
-        int maxi=0;
-        for(int i=0;i<str.size();i++){
-            if(str[i]=='(') open++;
-            else close++;
-            if(open==close){
-                maxi=max(maxi,2*open);
-            }else if(close>open){
-                close=0;
-                open=0;
+        int n=s.size();
+        stack<pair<int,char>>st;
+        map<pair<int,char>,int>hashmap;
+        int ans=0;
+        
+        for(int i=0;i<n;i++){
+            if(!st.empty() && st.top().second=='(' && s[i]==')'){
+                st.pop();
+                
+                if(st.empty()){
+                    ans=max(ans,i+1);
+                } else if(!st.empty() && 
+                hashmap.find(st.top())!=hashmap.end()){
+                    ans=max(ans,i-hashmap[st.top()]);
+                }
+            } else{
+                st.push({i,s[i]});
+                hashmap[{i,s[i]}]=i;
             }
         }
-        open=0;
-        close=0;
-        for(int i=str.size()-1;i>=0;i--){
-            if(str[i]=='(') open++;
-            else close++;
-            if(open==close){
-                maxi=max(maxi,2*open);
-            }else if(close<open){
-                close=0;
-                open=0;
-            }
-        }
-        return maxi;
+        
+        return ans;
     }
 };
 
@@ -52,6 +47,9 @@ int main() {
 
         Solution ob;
         cout << ob.maxLength(S) << "\n";
+
+        cout << "~"
+             << "\n";
     }
     return 0;
 }
